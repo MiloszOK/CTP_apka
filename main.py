@@ -6,7 +6,6 @@ import matplotlib.style
 import numpy as np
 import pandas as pd
 
-
 # ------------ TWORZENIE OKNA ------------- #
 
 
@@ -22,7 +21,12 @@ fig.canvas.manager.set_window_title('Wykres')
 ax1 = fig.add_subplot(1, 1, 1)
 fileread = 0
 
-wsp_var = tk.StringVar()
+nazwa_var = tk.StringVar()
+typ_var = tk.StringVar()
+zakres_dol_var = tk.IntVar()
+zakres_gora_var = tk.IntVar()
+syg_dol_var = tk.IntVar()
+syg_gora_var = tk.IntVar()
 
 # ------------------ FUNKCJE --------------- #
 
@@ -36,7 +40,7 @@ def plot(i):
             df = pd.read_csv(file, sep='    ', engine='python')
             aa = pd.DataFrame(df)
             if 'exp' in globals():
-                bb = aa.transform(lambda x: x*float(exp))
+                bb = aa.transform(lambda x: x * exp + b)
                 beta = [bb.at[y, 'U [V]'] for y in range(0, len(bb))]
             else:
                 beta = [aa.at[y, 'U [V]'] for y in range(0, len(aa))]
@@ -49,34 +53,62 @@ def plot(i):
 
 
 def show():
-    anim = animation.FuncAnimation(fig, func=plot, interval=1000, frames=10, repeat=False)
+    anim = animation.FuncAnimation(fig, func=plot, interval=1000, frames=10, repeat=True)
     plt.show()
 
 
 def submit():
-    wsp = wsp_var.get()
+    nazwa = nazwa_var.get()
+    typ = typ_var.get()
 
-    wsp_var.set("")
-    global exp
-    exp = float(wsp)
+    global exp,b
+    exp = ((zakres_gora_var.get()-zakres_dol_var.get())/(syg_gora_var.get()-syg_dol_var.get()))
+    b = zakres_dol_var.get() - syg_dol_var.get()*exp
+    print(exp, b)
+    nazwa_var.set('')
+    typ_var.set('')
+    zakres_dol_var.set('')
+    syg_dol_var.set('')
+    zakres_gora_var.set('')
+    syg_gora_var.set('')
 
-# współczynnik V/obr
-wsp_label = tk.Label(window, text = 'Współczynnik V/obr', font=('calibre',10, 'bold'))
-wsp_label2 = tk.Label(window, text = '(domyślnie 1)', font=('calibre',10, 'bold'))
-wsp_entry = tk.Entry(window, textvariable = wsp_var, font=('calibre', 10, 'normal'))
-sub_btn=tk.Button(window,text = 'Submit', command = submit)
-chooseFile = tk.Button(command=show, text='Wgraj plik, którego wykres chcesz wygenerować')
+nazwa_label = tk.Label(window, text='Nazwa czujnika:', font=('calibre', 10, 'bold'))
+nazwa_entry = tk.Entry(window, textvariable=nazwa_var, font=('calibre', 10, 'normal'))
+typ_label = tk.Label(window, text='Typ czujnika:', font=('calibre', 10, 'bold'))
+typ_entry = tk.Entry(window, textvariable=typ_var, font=('calibre', 10, 'normal'))
+zakres_dol_label = tk.Label(window, text='Zakres pomiarowy:', font=('calibre', 10, 'bold'))
+zakres_dol_entry = tk.Entry(window, textvariable=zakres_dol_var, font=('calibre', 10, 'normal'))
+zakres_pause_label = tk.Label(window, text=' - ', font=('calibre', 10, 'bold'))
+zakres_gora_entry = tk.Entry(window, textvariable=zakres_gora_var, font=('calibre', 10, 'normal'))
+syg_dol_label = tk.Label(window, text='Sygnał wyjściowy:', font=('calibre', 10, 'bold'))
+syg_dol_entry = tk.Entry(window, textvariable=syg_dol_var, font=('calibre', 10, 'normal'))
+syg_pause_label = tk.Label(window, text=' - ', font=('calibre', 10, 'bold'))
+syg_gora_entry = tk.Entry(window, textvariable=syg_gora_var, font=('calibre', 10, 'normal'))
+
+sub_btn = tk.Button(window, text='Submit', command=submit)
+chooseFile = tk.Button(command=show, text='Wgraj plik')
+
 
 # ------------------ Rozłożenie elementów w oknie --------------- #
 
-wsp_label.grid(row=0,column=0)
-wsp_label2.grid(row=1,column=0)
-wsp_entry.grid(row=0,column=1)
-sub_btn.grid(row=1,column=1)
-chooseFile.grid(row=3, column=1)
+#zakres_dol_entry.place(x=15, y=60, height=60, width=120)
+
+nazwa_label.grid(row=0, column=0)
+nazwa_entry.grid(row=0, column=1)
+typ_label.grid(row=1, column=0)
+typ_entry.grid(row=1, column=1)
+zakres_dol_label.grid(row=2, column=0)
+zakres_dol_entry.grid(row=2, column=1)
+zakres_pause_label.grid(row=2, column=2)
+zakres_gora_entry.grid(row=2, column=3)
+syg_dol_label.grid(row=3, column=0)
+syg_dol_entry.grid(row=3, column=1)
+syg_pause_label.grid(row=3, column=2)
+syg_gora_entry.grid(row=3, column=3)
+sub_btn.grid(row=4, column=1)
+chooseFile.grid(row=5, column=1)
 
 window.mainloop()
-
 
 # Dodać nazwę, typ, zakres pomiarowy i sygnał wyjściowy czujnika (sygnał analogowy U(t)).
 # Przeprowadzenie kalibracji - WF(t) = a*x*U(t)+b
