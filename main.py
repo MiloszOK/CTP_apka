@@ -1,4 +1,5 @@
 import tkinter as tk
+from PIL import Image, ImageTk
 import tkinter.filedialog
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -10,9 +11,9 @@ import pandas as pd
 
 
 window = tk.Tk()
+window.iconbitmap('pngimg.ico')
 window.title('Najwspanialsza apka CTP w tej galaktyce!')
-window.geometry('500x600')
-window.config(pady=20, padx=20)
+window.geometry('460x400')
 
 matplotlib.style.use('fivethirtyeight')
 
@@ -27,6 +28,22 @@ zakres_dol_var = tk.IntVar()
 zakres_gora_var = tk.IntVar()
 syg_dol_var = tk.IntVar()
 syg_gora_var = tk.IntVar()
+
+bg = tk.PhotoImage(file='koks.png')
+bg_label = tk.Label(window, image=bg)
+bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+# --------------------- TOTALNE GŁUPOTY NIE RUSZAĆ! --------------------- #
+
+def animationn():
+  global current_frame, loop
+
+  image = object11[current_frame]
+
+  cwiczenie_1.configure(image=image)
+  current_frame = (current_frame + 1) % frames1  # Reset to 0 using modulo
+
+  loop = window.after(50, animationn)  # Schedule next animation frame
 
 # ------------------ FUNKCJE --------------- #
 
@@ -47,18 +64,13 @@ def plot(i):
             alpha = [aa.at[i, 't [s]'] for i in range(0, len(aa))]
             ax1.clear()
             plt.plot(alpha, beta)
-            if 'exp' in globals():
-                plt.ylabel('obr')
-                plt.title('Wykres obr/t')
-            else:
-                plt.ylabel('U [V]')
-                plt.title('Wykres U/t')
+            plt.ylabel('obr')
             plt.xlabel('t [s]')
-
+            plt.title('Wykres obr/t')
 
 
 def show():
-    anim = animation.FuncAnimation(fig, func=plot, interval=1000, frames=10, repeat=True)
+    anim = animation.FuncAnimation(fig, func=plot, interval=3000, frames=10, repeat=True)
     plt.show()
 
 
@@ -76,48 +88,59 @@ def submit():
     syg_dol_var.set('')
     zakres_gora_var.set('')
     syg_gora_var.set('')
+    show()
 
-def unsubmit():
-    if 'exp' in globals():
-        global exp
-        del exp
+
+cwiczenie_1 = tk.Label(window, image='')
+podpis1 = 'cw1.gif'
+cw1 = Image.open(podpis1)
+frames1 = cw1.n_frames
+object11 = []
+for i in range(frames1):
+    obj = tk.PhotoImage(file=podpis1, format = f'gif -index {i}')
+    object11.append(obj)
 
 nazwa_label = tk.Label(window, text='Nazwa czujnika:', font=('calibre', 10, 'bold'))
-nazwa_entry = tk.Entry(window, textvariable=nazwa_var, font=('calibre', 10, 'normal'))
+nazwa_entry = tk.Entry(window, textvariable=nazwa_var, width=18, font=('calibre', 10, 'normal'))
 typ_label = tk.Label(window, text='Typ czujnika:', font=('calibre', 10, 'bold'))
-typ_entry = tk.Entry(window, textvariable=typ_var, font=('calibre', 10, 'normal'))
+typ_entry = tk.Entry(window, textvariable=typ_var, width=18, font=('calibre', 10, 'normal'))
 zakres_dol_label = tk.Label(window, text='Zakres pomiarowy:', font=('calibre', 10, 'bold'))
-zakres_dol_entry = tk.Entry(window, textvariable=zakres_dol_var, font=('calibre', 10, 'normal'))
+zakres_dol_entry = tk.Entry(window, textvariable=zakres_dol_var, width=18, font=('calibre', 10, 'normal'))
 zakres_pause_label = tk.Label(window, text=' - ', font=('calibre', 10, 'bold'))
-zakres_gora_entry = tk.Entry(window, textvariable=zakres_gora_var, font=('calibre', 10, 'normal'))
+zakres_gora_entry = tk.Entry(window, textvariable=zakres_gora_var, width=18, font=('calibre', 10, 'normal'))
 syg_dol_label = tk.Label(window, text='Sygnał wyjściowy:', font=('calibre', 10, 'bold'))
-syg_dol_entry = tk.Entry(window, textvariable=syg_dol_var, font=('calibre', 10, 'normal'))
+syg_dol_entry = tk.Entry(window, textvariable=syg_dol_var, width=18, font=('calibre', 10, 'normal'))
 syg_pause_label = tk.Label(window, text=' - ', font=('calibre', 10, 'bold'))
-syg_gora_entry = tk.Entry(window, textvariable=syg_gora_var, font=('calibre', 10, 'normal'))
+syg_gora_entry = tk.Entry(window, textvariable=syg_gora_var, width=18, font=('calibre', 10, 'normal'))
 
-sub_btn = tk.Button(window, text='Przelicz', command=submit)
-unsub_btn = tk.Button(window, text='Usuń przelicznik', command=unsubmit)
+sub_btn = tk.Button(window, text='Submit', command=submit)
 chooseFile = tk.Button(command=show, text='Wgraj plik')
 
 
 # ------------------ Rozłożenie elementów w oknie --------------- #
 
-nazwa_label.grid(row=0, column=0)
-nazwa_entry.grid(row=0, column=1)
-typ_label.grid(row=1, column=0)
-typ_entry.grid(row=1, column=1)
-zakres_dol_label.grid(row=2, column=0)
-zakres_dol_entry.grid(row=2, column=1)
-zakres_pause_label.grid(row=2, column=2)
-zakres_gora_entry.grid(row=2, column=3)
-syg_dol_label.grid(row=3, column=0)
-syg_dol_entry.grid(row=3, column=1)
-syg_pause_label.grid(row=3, column=2)
-syg_gora_entry.grid(row=3, column=3)
-sub_btn.grid(row=4, column=1)
-unsub_btn.grid(row=4, column=2)
-chooseFile.grid(row=5, column=1)
+#zakres_dol_entry.place(x=15, y=60, height=60, width=120)
 
+cwiczenie_1.grid(row=0, column=0, columnspan=4, sticky='w')
+nazwa_label.grid(row=1, column=0, sticky='w', padx=5)
+nazwa_entry.grid(row=1, column=1, sticky='e')
+typ_label.grid(row=2, column=0, sticky='w', padx=5)
+typ_entry.grid(row=2, column=1, sticky='e')
+zakres_dol_label.grid(row=3, column=0, sticky='w', padx=5)
+zakres_dol_entry.grid(row=3, column=1, sticky='e')
+zakres_pause_label.grid(row=3, column=2, sticky='w')
+zakres_gora_entry.grid(row=3, column=3, sticky='e')
+syg_dol_label.grid(row=4, column=0, sticky='w', padx=5)
+syg_dol_entry.grid(row=4, column=1, sticky='e')
+syg_pause_label.grid(row=4, column=2, sticky='w')
+syg_gora_entry.grid(row=4, column=3)
+sub_btn.grid(row=5, column=1)
+chooseFile.grid(row=6, column=1)
+window.grid_columnconfigure(0, weight=2)
+window.grid_columnconfigure(1, weight=1)
+
+current_frame = 0
+animationn()
 window.mainloop()
 
 # Dodać nazwę, typ, zakres pomiarowy i sygnał wyjściowy czujnika (sygnał analogowy U(t)).
