@@ -13,7 +13,7 @@ import pandas as pd
 window = tk.Tk()
 window.iconbitmap('pngimg.ico')
 window.title('Apka CTP v0.0.1')
-window.geometry('460x400')
+window.geometry('430x400')
 
 matplotlib.style.use('fivethirtyeight')
 
@@ -144,7 +144,7 @@ syg_dol_entry.grid(row=4, column=1, sticky='e')
 syg_pause_label.grid(row=4, column=2, sticky='w')
 syg_gora_entry.grid(row=4, column=3)
 sub_btn.grid(row=5, column=1)
-unsub_btn.grid(row=5, column=2)
+unsub_btn.grid(row=5, column=3)
 chooseFile.grid(row=6, column=1)
 window.grid_columnconfigure(0, weight=2)
 window.grid_columnconfigure(1, weight=1)
