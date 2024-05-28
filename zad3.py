@@ -44,13 +44,29 @@ def update(frame):
         pkt = oblicz_maksima(v0[start_index:start_index+num_values])
         ax.grid(True)
 
+def plot1s():
+    x, v0, _, _, _ = retrieve_data(file_path)
+    print("run")
+    plt.figure(figsize=(10, 6))
+    plt.plot(x[:200], v0[:200], label='v0')  # Plot only the first 100 values of v0
+    plt.xlabel('x')
+    plt.ylabel('Value')
+    pkt = oblicz_maksima(v0[:200])
+    ile = ile_maksimow_w_przedziale(pkt, v0[:200])
+    plt.plot([x[i] for i in pkt], [v0[i] for i in pkt], "x", label='Maksima lokalne')
+    plt.title(str(ile) + "imp/s = " + str(ile // 6) + " obr/s")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
 def oblicz_maksima(a):
     peaks, _ = find_peaks(a)
     return peaks
 
-def ile_maksimow_w_przedziale(peaks, alpha, start=1, end=2):
-    start = start.get()
-    end = end.get()
+def ile_maksimow_w_przedziale(peaks, alpha, start=0, end=1):
+    global count
+    #start = start.get()
+    #end = end.get()
     count = 0
     for peak in peaks:
         if start <= alpha[peak] <= end:
@@ -68,7 +84,7 @@ def main():
     fig, ax = plt.subplots(figsize=(10, 6))
 
     # Update the plot every second
-    ani = FuncAnimation(fig, update, frames=np.arange(0, total_values, num_values), interval=1000)
+    ani = FuncAnimation(fig, update, frames=100, interval=1000)
 
     # Set x-axis ticks to show every 50th value
     x_ticks = np.arange(0, total_values, 5000)

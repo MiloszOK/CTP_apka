@@ -1,10 +1,3 @@
-"""
-1. Wykres ma byc real-time
-2. Wykres ma byc zapetlony
-3. Wyliczenie ilosci ekstrem lokalnych dla przedzialu 1 sekunda
-
-"""
-
 import tkinter as tk
 import tkinter.filedialog
 import matplotlib.pyplot as plt
@@ -120,10 +113,10 @@ czas_dol_entry = tk.Entry(window, textvariable=przedzial_czas_dol, font=('calibr
 czas_gora_entry = tk.Entry(window, textvariable=przedzial_czas_gora, font=('calibre', 10, 'normal'))
 impulsy_result = tk.Label(window, text='Impulsy:', font=('calibre', 10, 'normal'))
 
-zad3 = tk.Button(command=zad3.main, text="Wykres predkosci obrotowej")
+flowplot = tk.Button(command=zad3.main, text="Wykres predkosci obrotowej")
 sub_btn = tk.Button(window, text='Submit', command=submit)
 chooseFile = tk.Button(command=show, text='Wgraj plik')
-
+maxplot = tk.Button(command=zad3.plot1s, text="Zlicz impulsy")
 
 # ------------------ Rozłożenie elementów w oknie --------------- #
 
@@ -150,7 +143,8 @@ czas_dol_entry.grid(row=6, column=1)
 zakres_pause_label.grid(row=6, column=2)
 czas_gora_entry.grid(row=6, column=3)
 impulsy_result.grid(row=7, column=0)
-zad3.grid(row=8, column=0)
+flowplot.grid(row=8, column=0)
+maxplot.grid(row=9, column=0)
 window.mainloop()
 
 # Dodać nazwę, typ, zakres pomiarowy i sygnał wyjściowy czujnika (sygnał analogowy U(t)).
