@@ -47,9 +47,14 @@ def plot(i):
             alpha = [aa.at[i, 't [s]'] for i in range(0, len(aa))]
             ax1.clear()
             plt.plot(alpha, beta)
-            plt.ylabel('obr')
+            if 'exp' in globals():
+                plt.ylabel('obr')
+                plt.title('Wykres obr/t')
+            else:
+                plt.ylabel('U [V]')
+                plt.title('Wykres U/t')
             plt.xlabel('t [s]')
-            plt.title('Wykres obr/t')
+
 
 
 def show():
@@ -72,6 +77,11 @@ def submit():
     zakres_gora_var.set('')
     syg_gora_var.set('')
 
+def unsubmit():
+    if 'exp' in globals():
+        global exp
+        del exp
+
 nazwa_label = tk.Label(window, text='Nazwa czujnika:', font=('calibre', 10, 'bold'))
 nazwa_entry = tk.Entry(window, textvariable=nazwa_var, font=('calibre', 10, 'normal'))
 typ_label = tk.Label(window, text='Typ czujnika:', font=('calibre', 10, 'bold'))
@@ -85,13 +95,12 @@ syg_dol_entry = tk.Entry(window, textvariable=syg_dol_var, font=('calibre', 10, 
 syg_pause_label = tk.Label(window, text=' - ', font=('calibre', 10, 'bold'))
 syg_gora_entry = tk.Entry(window, textvariable=syg_gora_var, font=('calibre', 10, 'normal'))
 
-sub_btn = tk.Button(window, text='Submit', command=submit)
+sub_btn = tk.Button(window, text='Przelicz', command=submit)
+unsub_btn = tk.Button(window, text='Usuń przelicznik', command=unsubmit)
 chooseFile = tk.Button(command=show, text='Wgraj plik')
 
 
 # ------------------ Rozłożenie elementów w oknie --------------- #
-
-#zakres_dol_entry.place(x=15, y=60, height=60, width=120)
 
 nazwa_label.grid(row=0, column=0)
 nazwa_entry.grid(row=0, column=1)
@@ -106,6 +115,7 @@ syg_dol_entry.grid(row=3, column=1)
 syg_pause_label.grid(row=3, column=2)
 syg_gora_entry.grid(row=3, column=3)
 sub_btn.grid(row=4, column=1)
+unsub_btn.grid(row=4, column=2)
 chooseFile.grid(row=5, column=1)
 
 window.mainloop()
