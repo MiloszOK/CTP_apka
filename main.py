@@ -1,3 +1,10 @@
+"""
+1. Wykres ma byc real-time
+2. Wykres ma byc zapetlony
+3. Wyliczenie ilosci ekstrem lokalnych dla przedzialu 1 sekunda
+
+"""
+
 import tkinter as tk
 import tkinter.filedialog
 import matplotlib.pyplot as plt
@@ -5,7 +12,8 @@ import matplotlib.animation as animation
 import matplotlib.style
 import numpy as np
 import pandas as pd
-
+from scipy.signal import find_peaks
+import zad3
 # ------------ TWORZENIE OKNA ------------- #
 
 
@@ -25,8 +33,14 @@ nazwa_var = tk.StringVar()
 typ_var = tk.StringVar()
 zakres_dol_var = tk.IntVar()
 zakres_gora_var = tk.IntVar()
+zakres_gora_var.set(10)
 syg_dol_var = tk.IntVar()
 syg_gora_var = tk.IntVar()
+syg_gora_var.set(10)
+przedzial_czas_dol = tk.IntVar()
+przedzial_czas_dol.set(1)
+przedzial_czas_gora = tk.IntVar()
+przedzial_czas_gora.set(2)
 
 # ------------------ FUNKCJE --------------- #
 
@@ -45,13 +59,29 @@ def plot(i):
             else:
                 beta = [aa.at[y, 'U [V]'] for y in range(0, len(aa))]
             alpha = [aa.at[i, 't [s]'] for i in range(0, len(aa))]
+            pts = oblicz_maksima(beta)
+            p = ile_maksimow_w_przedziale(pts, alpha)
             ax1.clear()
             plt.plot(alpha, beta)
+            plt.plot([alpha[i] for i in pts], [beta[i] for i in pts], "x", label='Maksima lokalne')
             plt.ylabel('obr')
             plt.xlabel('t [s]')
             plt.title('Wykres obr/t')
 
+def oblicz_maksima(a):
+    peaks, _ = find_peaks(a)
+    return peaks
 
+def ile_maksimow_w_przedziale(peaks, alpha, start=przedzial_czas_dol, end=przedzial_czas_gora):
+    start = start.get()
+    end = end.get()
+    count = 0
+    for peak in peaks:
+        if start <= alpha[peak] <= end:
+            count += 1
+    counter_label = tk.Label(window, text=str(count))
+    counter_label.grid(row=7, column=1)
+    return count
 def show():
     anim = animation.FuncAnimation(fig, func=plot, interval=1000, frames=10, repeat=True)
     plt.show()
@@ -85,6 +115,12 @@ syg_dol_entry = tk.Entry(window, textvariable=syg_dol_var, font=('calibre', 10, 
 syg_pause_label = tk.Label(window, text=' - ', font=('calibre', 10, 'bold'))
 syg_gora_entry = tk.Entry(window, textvariable=syg_gora_var, font=('calibre', 10, 'normal'))
 
+maksima_label = tk.Label(window, text='Przedzial t:', font=('calibre', 10, 'bold'))
+czas_dol_entry = tk.Entry(window, textvariable=przedzial_czas_dol, font=('calibre', 10, 'normal'))
+czas_gora_entry = tk.Entry(window, textvariable=przedzial_czas_gora, font=('calibre', 10, 'normal'))
+impulsy_result = tk.Label(window, text='Impulsy:', font=('calibre', 10, 'normal'))
+
+zad3 = tk.Button(command=zad3.main, text="Wykres predkosci obrotowej")
 sub_btn = tk.Button(window, text='Submit', command=submit)
 chooseFile = tk.Button(command=show, text='Wgraj plik')
 
@@ -108,6 +144,13 @@ syg_gora_entry.grid(row=3, column=3)
 sub_btn.grid(row=4, column=1)
 chooseFile.grid(row=5, column=1)
 
+
+maksima_label.grid(row=6, column=0)
+czas_dol_entry.grid(row=6, column=1)
+zakres_pause_label.grid(row=6, column=2)
+czas_gora_entry.grid(row=6, column=3)
+impulsy_result.grid(row=7, column=0)
+zad3.grid(row=8, column=0)
 window.mainloop()
 
 # Dodać nazwę, typ, zakres pomiarowy i sygnał wyjściowy czujnika (sygnał analogowy U(t)).
