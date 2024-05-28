@@ -64,9 +64,13 @@ def plot(i):
             alpha = [aa.at[i, 't [s]'] for i in range(0, len(aa))]
             ax1.clear()
             plt.plot(alpha, beta)
-            plt.ylabel('obr')
+            if 'exp' in globals():
+                plt.ylabel('obr')
+                plt.title('Wykres obr/t')
+            else:
+                plt.ylabel('U [V]')
+                plt.title('Wykres U/t')
             plt.xlabel('t [s]')
-            plt.title('Wykres obr/t')
 
 
 def show():
@@ -88,7 +92,11 @@ def submit():
     syg_dol_var.set('')
     zakres_gora_var.set('')
     syg_gora_var.set('')
-    show()
+
+def unsubmit():
+    if 'exp' in globals():
+        global exp
+        del exp
 
 
 cwiczenie_1 = tk.Label(window, image='')
@@ -113,7 +121,8 @@ syg_dol_entry = tk.Entry(window, textvariable=syg_dol_var, width=18, font=('cali
 syg_pause_label = tk.Label(window, text=' - ', font=('calibre', 10, 'bold'))
 syg_gora_entry = tk.Entry(window, textvariable=syg_gora_var, width=18, font=('calibre', 10, 'normal'))
 
-sub_btn = tk.Button(window, text='Submit', command=submit)
+sub_btn = tk.Button(window, text='Przelicz', command=submit)
+unsub_btn = tk.Button(window, text='Usuń przelicznik', command=unsubmit)
 chooseFile = tk.Button(command=show, text='Wgraj plik')
 
 
@@ -135,6 +144,7 @@ syg_dol_entry.grid(row=4, column=1, sticky='e')
 syg_pause_label.grid(row=4, column=2, sticky='w')
 syg_gora_entry.grid(row=4, column=3)
 sub_btn.grid(row=5, column=1)
+unsub_btn.grid(row=5, column=2)
 chooseFile.grid(row=6, column=1)
 window.grid_columnconfigure(0, weight=2)
 window.grid_columnconfigure(1, weight=1)
