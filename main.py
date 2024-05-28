@@ -85,7 +85,7 @@ def submit():
     global exp,b
     exp = ((zakres_gora_var.get()-zakres_dol_var.get())/(syg_gora_var.get()-syg_dol_var.get()))
     b = zakres_dol_var.get() - syg_dol_var.get()*exp
-    print(exp, b)
+    print(exp, b, nazwa, typ)
     nazwa_var.set('')
     typ_var.set('')
     zakres_dol_var.set('')
