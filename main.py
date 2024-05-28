@@ -12,7 +12,7 @@ import pandas as pd
 
 window = tk.Tk()
 window.iconbitmap('pngimg.ico')
-window.title('Najwspanialsza apka CTP w tej galaktyce!')
+window.title('Apka CTP v0.0.1')
 window.geometry('460x400')
 
 matplotlib.style.use('fivethirtyeight')
