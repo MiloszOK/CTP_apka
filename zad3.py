@@ -51,17 +51,17 @@ def plot1s():
 
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
 
-    ax1.plot(x[:200], v0[:200], label='v0')
+    ax1.plot(x[10000:10200], v0[10000:10200], label='v0')
     ax1.set_xlabel('x')
     ax1.set_ylabel('Value')
-    pkt = oblicz_maksima(v0[:200])
+    pkt = oblicz_maksima(v0)
     ile = ile_maksimow_w_przedziale(pkt, v0)
-    ax1.plot([x[i] for i in pkt], [v0[i] for i in pkt], "x", label='Maksima lokalne')
-    ax1.set_title(str(ile) + " imp/s = " + str(ile // 6) + " obr/s")
+    ax1.plot([x[i+10000] for i in pkt], [v0[i+10000] for i in pkt], "x", label='Maksima lokalne')
+    ax1.set_title(str(len(pkt)) + " imp/s = " + str(len(pkt) // 6) + " obr/s")
     ax1.legend()
     ax1.grid(True)
 
-    ax2.plot(x[:200], v1[:200], label='v1', color='red')
+    ax2.plot(x[10000:10200], v1[10000:10200], label='v1', color='red')
     ax2.set_xlabel('x')
     ax2.set_ylabel('Value')
     ax2.legend()
@@ -71,11 +71,11 @@ def plot1s():
 
     plt.show()
 
-def oblicz_maksima(a):
-    peaks, _ = find_peaks(a)
+def oblicz_maksima(a, start=10000, end=10200):
+    peaks, _ = find_peaks(a[start:end])
     return peaks
 
-def ile_maksimow_w_przedziale(peaks, alpha, start=0, end=1):
+def ile_maksimow_w_przedziale(peaks, alpha, start=50, end=51):
     global count
     count = 0
     for peak in peaks:
