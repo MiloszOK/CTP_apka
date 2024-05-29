@@ -1,10 +1,12 @@
 import tkinter as tk
 from PIL import Image, ImageTk
+from fpdf import FPDF
 import tkinter.filedialog
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import matplotlib.style
 import numpy as np
+import datetime
 import pandas as pd
 from scipy.signal import find_peaks
 import zad3
@@ -37,6 +39,8 @@ przedzial_czas_dol = tk.IntVar()
 przedzial_czas_dol.set(1)
 przedzial_czas_gora = tk.IntVar()
 przedzial_czas_gora.set(2)
+
+now = datetime.datetime.now()
 
 
 bg = tk.PhotoImage(file='koks.png')
@@ -119,19 +123,41 @@ def submit():
     exp = ((zakres_gora_var.get() - zakres_dol_var.get()) / (syg_gora_var.get() - syg_dol_var.get()))
     b = zakres_dol_var.get() - syg_dol_var.get() * exp
     print(exp, b, nazwa, typ, company, client)
-    nazwa_var.set('')
-    typ_var.set('')
-    zakres_dol_var.set('')
-    syg_dol_var.set('')
-    zakres_gora_var.set('')
-    syg_gora_var.set('')
-    company_var.set('')
-    client_var.set('')
+
+    # nazwa_var.set('')
+    # typ_var.set('')
+    # zakres_dol_var.set('')
+    # syg_dol_var.set('')
+    # zakres_gora_var.set('')
+    # syg_gora_var.set('')
+    # company_var.set('')
+    # client_var.set('')
 
 def unsubmit():
     if 'exp' in globals():
         global exp
         del exp
+
+def export():
+    plt.savefig('line_plot.pdf')
+    plt.savefig('line_plot.png')
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("helvetica", "B", 16)
+    pdf.cell(40, 10, f"Klient: {client_var.get()}")
+    pdf.ln(10)
+    pdf.cell(60, 10, f"Firma: {company_var.get()}")
+    pdf.ln(10)
+    pdf.cell(60, 10, f"Urzadzenie pomiarowe: {nazwa_var.get()}")
+    pdf.ln(10)
+    pdf.cell(60, 10, f"Typ urzadzenia: {typ_var.get()}")
+    pdf.ln(10)
+    pdf.cell(60, 10, f"Data: {now}")
+
+    pdf.ln(20)
+    pdf.image('line_plot.png', h=100)
+    pdf.output("Raport.pdf")
+
 
 cwiczenie_1 = tk.Label(window, image='')
 podpis1 = 'cw1.gif'
@@ -168,6 +194,7 @@ maxplot = tk.Button(command=zad3.plot1s, text="Zlicz impulsy")
 sub_btn = tk.Button(window, text='Przelicz', command=submit)
 unsub_btn = tk.Button(window, text='Usuń przelicznik', command=unsubmit)
 chooseFile = tk.Button(command=show, text='Wgraj plik')
+zapis = tk.Button(command=export, text="Wyeksportuj")
 
 # ------------------ Rozłożenie elementów w oknie --------------- #
 
@@ -191,6 +218,7 @@ client_entry.grid(row=6, column=1, sticky='e')
 sub_btn.grid(row=7, column=1)
 unsub_btn.grid(row=7, column=3)
 chooseFile.grid(row=8, column=1)
+zapis.grid(row=8, column=3)
 zakres_pause_label.grid(row=3, column=2, sticky='w')
 
 maksima_label.grid(row=10, column=0, sticky='w')
