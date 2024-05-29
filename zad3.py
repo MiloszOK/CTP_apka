@@ -44,19 +44,31 @@ def update(frame):
         pkt = oblicz_maksima(v0[start_index:start_index+num_values])
         ax.grid(True)
 
+import matplotlib.pyplot as plt
+
 def plot1s():
-    x, v0, _, _, _ = retrieve_data(file_path)
-    print("run")
-    plt.figure(figsize=(10, 6))
-    plt.plot(x[:200], v0[:200], label='v0')  # Plot only the first 100 values of v0
-    plt.xlabel('x')
-    plt.ylabel('Value')
+    x, v0, v1, _, _ = retrieve_data(file_path)
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
+
+    ax1.plot(x[:200], v0[:200], label='v0')
+    ax1.set_xlabel('x')
+    ax1.set_ylabel('Value')
     pkt = oblicz_maksima(v0[:200])
-    ile = ile_maksimow_w_przedziale(pkt, v0[:200])
-    plt.plot([x[i] for i in pkt], [v0[i] for i in pkt], "x", label='Maksima lokalne')
-    plt.title(str(ile) + "imp/s = " + str(ile // 6) + " obr/s")
-    plt.legend()
-    plt.grid(True)
+    ile = ile_maksimow_w_przedziale(pkt, v0)
+    ax1.plot([x[i] for i in pkt], [v0[i] for i in pkt], "x", label='Maksima lokalne')
+    ax1.set_title(str(ile) + " imp/s = " + str(ile // 6) + " obr/s")
+    ax1.legend()
+    ax1.grid(True)
+
+    ax2.plot(x[:200], v1[:200], label='v1', color='red')
+    ax2.set_xlabel('x')
+    ax2.set_ylabel('Value')
+    ax2.legend()
+    ax2.grid(True)
+
+    plt.tight_layout()
+
     plt.show()
 
 def oblicz_maksima(a):
@@ -65,14 +77,11 @@ def oblicz_maksima(a):
 
 def ile_maksimow_w_przedziale(peaks, alpha, start=0, end=1):
     global count
-    #start = start.get()
-    #end = end.get()
     count = 0
     for peak in peaks:
         if start <= alpha[peak] <= end:
             count += 1
-    #counter_label = tk.Label(window, text=str(count))
-    #counter_label.grid(row=7, column=1)
+
     return count
 
 def main():
