@@ -14,7 +14,7 @@ import zad3
 window = tk.Tk()
 window.iconbitmap('pngimg.ico')
 window.title('Apka CTP v0.0.1')
-window.geometry('500x600')
+window.geometry('460x400')
 
 matplotlib.style.use('fivethirtyeight')
 
@@ -102,7 +102,7 @@ def ile_maksimow_w_przedziale(peaks, alpha, start=przedzial_czas_dol, end=przedz
         if start <= alpha[peak] <= end:
             count += 1
     counter_label = tk.Label(window, text=str(count))
-    counter_label.grid(row=11, column=5)
+    counter_label.grid(row=11, column=2)
     return count
 
 def show():
@@ -150,6 +150,7 @@ zakres_gora_entry = tk.Entry(window, textvariable=zakres_gora_var, width=18, fon
 syg_dol_label = tk.Label(window, text='Sygnał wyjściowy:', font=('calibre', 10, 'bold'))
 syg_dol_entry = tk.Entry(window, textvariable=syg_dol_var, width=18, font=('calibre', 10, 'normal'))
 syg_pause_label = tk.Label(window, text=' - ', font=('calibre', 10, 'bold'))
+zakresior_pause_label = tk.Label(window, text=' - ', font=('calibre', 10, 'bold'))
 syg_gora_entry = tk.Entry(window, textvariable=syg_gora_var, width=18, font=('calibre', 10, 'normal'))
 company_label = tk.Label(window, text='Nazwa firmy:', font=('calibre', 10, 'bold'))
 company_entry = tk.Entry(window, textvariable=company_var, width=18, font=('calibre', 10, 'normal'))
@@ -157,8 +158,8 @@ client_label = tk.Label(window, text='Nazwa klienta:', font=('calibre', 10, 'bol
 client_entry = tk.Entry(window, textvariable=client_var, width=18, font=('calibre', 10, 'normal'))
 
 maksima_label = tk.Label(window, text='Przedzial t:', font=('calibre', 10, 'bold'))
-czas_dol_entry = tk.Entry(window, textvariable=przedzial_czas_dol, font=('calibre', 10, 'normal'))
-czas_gora_entry = tk.Entry(window, textvariable=przedzial_czas_gora, font=('calibre', 10, 'normal'))
+czas_dol_entry = tk.Entry(window, textvariable=przedzial_czas_dol, width=18, font=('calibre', 10, 'normal'))
+czas_gora_entry = tk.Entry(window, textvariable=przedzial_czas_gora, width=18, font=('calibre', 10, 'normal'))
 impulsy_result = tk.Label(window, text='Impulsy:', font=('calibre', 10, 'normal'))
 
 flowplot = tk.Button(command=zad3.main, text="Wykres predkosci obrotowej")
@@ -190,14 +191,15 @@ client_entry.grid(row=6, column=1, sticky='e')
 sub_btn.grid(row=7, column=1)
 unsub_btn.grid(row=7, column=3)
 chooseFile.grid(row=8, column=1)
+zakres_pause_label.grid(row=3, column=2, sticky='w')
 
-maksima_label.grid(row=10, column=0)
-czas_dol_entry.grid(row=10, column=1)
-zakres_pause_label.grid(row=10, column=2)
-czas_gora_entry.grid(row=10, column=3)
-impulsy_result.grid(row=11, column=0)
-flowplot.grid(row=12, column=0)
-maxplot.grid(row=13, column=0)
+maksima_label.grid(row=10, column=0, sticky='w')
+czas_dol_entry.grid(row=10, column=1, sticky='e')
+zakresior_pause_label.grid(row=10, column=2, sticky='w')
+czas_gora_entry.grid(row=10, column=3, sticky='e')
+impulsy_result.grid(row=11, column=0, sticky='w')
+flowplot.grid(row=12, column=1)
+maxplot.grid(row=13, column=1)
 
 window.grid_columnconfigure(0, weight=2)
 window.grid_columnconfigure(1, weight=1)
