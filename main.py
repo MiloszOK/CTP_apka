@@ -6,13 +6,15 @@ import matplotlib.animation as animation
 import matplotlib.style
 import numpy as np
 import pandas as pd
+from scipy.signal import find_peaks
+import zad3
 
 # ------------ TWORZENIE OKNA ------------- #
 
 window = tk.Tk()
 window.iconbitmap('pngimg.ico')
 window.title('Apka CTP v0.0.1')
-window.geometry('800x600')
+window.geometry('500x600')
 
 matplotlib.style.use('fivethirtyeight')
 
@@ -25,10 +27,17 @@ nazwa_var = tk.StringVar()
 typ_var = tk.StringVar()
 zakres_dol_var = tk.IntVar()
 zakres_gora_var = tk.IntVar()
+zakres_gora_var.set(10)
 syg_dol_var = tk.IntVar()
 syg_gora_var = tk.IntVar()
+syg_gora_var.set(10)
 company_var = tk.StringVar()
 client_var = tk.StringVar()
+przedzial_czas_dol = tk.IntVar()
+przedzial_czas_dol.set(1)
+przedzial_czas_gora = tk.IntVar()
+przedzial_czas_gora.set(2)
+
 
 bg = tk.PhotoImage(file='koks.png')
 bg_label = tk.Label(window, image=bg)
@@ -59,9 +68,15 @@ def plot(i):
             else:
                 beta = [aa.at[y, 'U [V]'] for y in range(0, len(aa))]
             alpha = [aa.at[i, 't [s]'] for i in range(0, len(aa))]
+            pts = oblicz_maksima(beta)
+            p = ile_maksimow_w_przedziale(pts, alpha)
             ax1.clear()
             ax2.clear()
             ax1.plot(alpha, beta)
+            plt.plot([alpha[i] for i in pts], [beta[i] for i in pts], "x", label='Maksima lokalne')
+            plt.ylabel('obr')
+            plt.xlabel('t [s]')
+            plt.title('Wykres obr/t')
             if 'exp' in globals():
                 ax1.set_ylabel('obr')
                 ax1.set_title('Wykres obr/t')
@@ -74,6 +89,21 @@ def plot(i):
                 ax2.set_ylabel('WF(t)')
                 ax2.set_title('Wykres WF(t)/t')
             ax2.set_xlabel('t [s]')
+
+def oblicz_maksima(a):
+    peaks, _ = find_peaks(a)
+    return peaks
+
+def ile_maksimow_w_przedziale(peaks, alpha, start=przedzial_czas_dol, end=przedzial_czas_gora):
+    start = start.get()
+    end = end.get()
+    count = 0
+    for peak in peaks:
+        if start <= alpha[peak] <= end:
+            count += 1
+    counter_label = tk.Label(window, text=str(count))
+    counter_label.grid(row=11, column=5)
+    return count
 
 def show():
     anim = animation.FuncAnimation(fig, func=plot, interval=3000, frames=10, repeat=True)
@@ -126,6 +156,14 @@ company_entry = tk.Entry(window, textvariable=company_var, width=18, font=('cali
 client_label = tk.Label(window, text='Nazwa klienta:', font=('calibre', 10, 'bold'))
 client_entry = tk.Entry(window, textvariable=client_var, width=18, font=('calibre', 10, 'normal'))
 
+maksima_label = tk.Label(window, text='Przedzial t:', font=('calibre', 10, 'bold'))
+czas_dol_entry = tk.Entry(window, textvariable=przedzial_czas_dol, font=('calibre', 10, 'normal'))
+czas_gora_entry = tk.Entry(window, textvariable=przedzial_czas_gora, font=('calibre', 10, 'normal'))
+impulsy_result = tk.Label(window, text='Impulsy:', font=('calibre', 10, 'normal'))
+
+flowplot = tk.Button(command=zad3.main, text="Wykres predkosci obrotowej")
+maxplot = tk.Button(command=zad3.plot1s, text="Zlicz impulsy")
+
 sub_btn = tk.Button(window, text='Przelicz', command=submit)
 unsub_btn = tk.Button(window, text='Usuń przelicznik', command=unsubmit)
 chooseFile = tk.Button(command=show, text='Wgraj plik')
@@ -140,7 +178,7 @@ typ_entry.grid(row=2, column=1, sticky='e')
 zakres_dol_label.grid(row=3, column=0, sticky='w', padx=5)
 zakres_dol_entry.grid(row=3, column=1, sticky='e')
 zakres_pause_label.grid(row=3, column=2, sticky='w')
-zakres_gora_entry.grid(row=3, column=3, sticky='e')
+zakres_gora_entry.grid(row=3, column=3)
 syg_dol_label.grid(row=4, column=0, sticky='w', padx=5)
 syg_dol_entry.grid(row=4, column=1, sticky='e')
 syg_pause_label.grid(row=4, column=2, sticky='w')
@@ -152,6 +190,15 @@ client_entry.grid(row=6, column=1, sticky='e')
 sub_btn.grid(row=7, column=1)
 unsub_btn.grid(row=7, column=3)
 chooseFile.grid(row=8, column=1)
+
+maksima_label.grid(row=10, column=0)
+czas_dol_entry.grid(row=10, column=1)
+zakres_pause_label.grid(row=10, column=2)
+czas_gora_entry.grid(row=10, column=3)
+impulsy_result.grid(row=11, column=0)
+flowplot.grid(row=12, column=0)
+maxplot.grid(row=13, column=0)
+
 window.grid_columnconfigure(0, weight=2)
 window.grid_columnconfigure(1, weight=1)
 
